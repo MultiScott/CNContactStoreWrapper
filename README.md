@@ -16,7 +16,7 @@ If you want to use CNContactStoreWrapper in a [SwiftPM](https://swift.org/packag
 
 ``` swift
 dependencies: [
-  .package(url: "https://github.com/MultiScott/CNContactStoreWrapper", from: "0.1.0")
+  .package(url: "https://github.com/MultiScott/CNContactStoreWrapper", from: "0.2.0")
 ]
 ```
 
@@ -25,28 +25,59 @@ dependencies: [
 
 ```swift
 import CNContactStoreWrapper
-...
 
-let wrapper = ContactStoreWrapper(store: store)
-await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async { [self] in
-                let result = wrapper.changeHistoryFetchResult(fetchHistoryRequest, error: nil)
-                // Saving the result's token as stated in CNContactStore documentation, ie:
-                // https://developer.apple.com/documentation/contacts/cncontactstore/3113739-currenthistorytoken
-                // When fetching contacts or change history events, use the token on CNFetchResult instead.
-                savedToken = result.currentHistoryToken
-                guard let enumerator = result.value as? NSEnumerator else { return }
-                enumerator
-                    .compactMap {
-                        $0 as? CNChangeHistoryEvent
-                    }
-                    .forEach { event in
-                        // The appropriate `visit(_:)` method will be called right away
-                        event.accept(visitor)
-                    }
-                continuation.resume()
-            }
+... 
+
+let fetchRequest = CNChangeHistoryFetchRequest()
+fetchRequest.startingToken = self.currentHistoryToken
+fetchRequest.shouldUnifyResults = true
+let wrapper = CNContactStoreWrapper(store: contactStore)
+let result = wrapper.changeHistoryFetchResult(fetchRequest, error: nil)
+guard let enumerator = result.value as? NSEnumerator else {
+    throw ContactError.failedToCreateNSEnumeratorForChangeHistory
+}
+enumerator
+    .compactMap {
+        $0 as? CNChangeHistoryEvent
+    }
+    .forEach { event in
+        switch event {
+        case let addContactEvent as CNChangeHistoryAddContactEvent:
+            print("Added Contact: \(addContactEvent.contact.identifier)")
+            // Handle adding to your local store
+            
+        case let updateContactEvent as CNChangeHistoryUpdateContactEvent:
+            print("Updated Contact: \(updateContactEvent.contact.identifier)")
+            // Handle updating in your local store
+            
+        case let deleteContactEvent as CNChangeHistoryDeleteContactEvent:
+            print("Deleted Contact with ID: \(deleteContactEvent.contactIdentifier)")
+            // Handle deletion in your local store
+            
+        case let addGroupEvent as CNChangeHistoryAddGroupEvent:
+            print("Added Group: \(addGroupEvent.group.identifier)")
+            // Handle group addition if needed
+            
+        case let updateGroupEvent as CNChangeHistoryUpdateGroupEvent:
+            print("Updated Group: \(updateGroupEvent.group.identifier)")
+            // Handle group updates if needed
+            
+        case let deleteGroupEvent as CNChangeHistoryDeleteGroupEvent:
+            print("Deleted Group with ID: \(deleteGroupEvent.groupIdentifier)")
+            // Handle group deletion if needed
+            
+        case let addMemberEvent as CNChangeHistoryAddMemberToGroupEvent:
+            print("Added member \(addMemberEvent.member.identifier) to group \(addMemberEvent.group.identifier)")
+            // Handle member addition
+            
+        case let removeMemberEvent as CNChangeHistoryRemoveMemberFromGroupEvent:
+            print("Removed member \(removeMemberEvent.member.identifier) from group \(removeMemberEvent.group.identifier)")
+            // Handle member removal
+            
+        default:
+            break
         }
+    }
 ```
 
 ## License
