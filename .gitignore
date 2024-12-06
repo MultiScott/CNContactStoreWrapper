@@ -4,7 +4,7 @@
 
 ## User settings
 xcuserdata/
-
+/.swiftpm
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
 *.xcscmblueprint
 *.xccheckout
@@ -21,6 +21,7 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
+
 
 ## Obj-C/Swift specific
 *.hmap
