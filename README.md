@@ -4,7 +4,7 @@ CNContactStoreWrapper is a SPM library for interacting with `CNContactStore`.
 
 ## Motivation
 
-To enumerate changes to the `CNContactStore` we must use the method [enumeratorForChangeHistoryFetchRequest](https://developer.apple.com/documentation/contacts/cnchangehistoryfetchrequest). This method is only exposed in Obj-C so we can wrap the store in an Obj-C class and expose the method to Swift.
+To enumerate changes to the `CNContactStore` we must use the method [enumeratorForChangeHistoryFetchRequest](https://developer.apple.com/documentation/contacts/cnchangehistoryfetchrequest). This method is only exposed in Obj-C so we can wrap the store in an Obj-C class and expose the result to Swift.
 
 ## Installation
 
@@ -79,6 +79,10 @@ enumerator
         }
     }
 ```
+
+## Attribution
+
+This solution was inspired and informed by this [StackOverFlow post](https://stackoverflow.com/questions/73861250/how-would-i-check-if-a-cncontact-has-changed-since-the-last-time-my-ios-app-save/75860924#75860924) answered by [andercover](https://stackoverflow.com/users/1425697/andercover).
 
 ## License
 

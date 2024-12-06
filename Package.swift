@@ -16,7 +16,7 @@ let package = Package(
         .target(
             name: "CNContactStoreWrapper",
             path: "CNContactStoreWrapper",
-            publicHeadersPath: ""
+            publicHeadersPath: "."
         )
     ]
 )
