@@ -16,7 +16,7 @@ If you want to use CNContactStoreWrapper in a [SwiftPM](https://swift.org/packag
 
 ``` swift
 dependencies: [
-  .package(url: "https://github.com/MultiScott/CNContactStoreWrapper", from: "0.2.0")
+  .package(url: "https://github.com/MultiScott/CNContactStoreWrapper", from: "0.2.1")
 ]
 ```
 
